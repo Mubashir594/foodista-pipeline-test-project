@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: foodista-pipeline-test-project
+  labels:
+    app: foodista-pipeline-test-project
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: foodista-pipeline-test-project
+  template:
+    metadata:
+      labels:
+        app: foodista-pipeline-test-project
+    spec:
+      containers:
+        - name: foodista-pipeline-test-project
+          image: mubashir594/foodista-pipeline-test-project:1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
