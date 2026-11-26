@@ -1,20 +1,19 @@
-FROM python:3.11-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+# Stage 1: Nginx base image
+FROM nginx:stable-alpine AS base
 
-WORKDIR /app
+# Maintainer and project information
+LABEL maintainer="Mubashir MK"
+LABEL description="Foodista static website served via Nginx"
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# Remove default Nginx welcome page
+RUN rm -rf /usr/share/nginx/html/*
 
-COPY . /app/
+# Copy project files into Nginx web root
+COPY . /usr/share/nginx/html/
 
-RUN adduser --disabled-password --gecos "" appuser && \
-    chown -R appuser:appuser /app
-USER appuser
+# Expose port 80
+EXPOSE 80
 
-EXPOSE 8000
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start Nginx in foreground
+CMD ["nginx", "-g", "daemon off;"]
