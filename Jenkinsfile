@@ -83,7 +83,7 @@ pipeline {
                         )
                     ]) {
                         sh """
-                            sed -i '/name: foodista\\$/{n;s|image:.*|image: ${DOCKER_IMAGE}:${env.BUILD_NUMBER}|}' k8s/Deployment.yaml
+                            sed -i '/name: foodista/{n;s|image:.*|image: ${DOCKER_IMAGE}:${env.BUILD_NUMBER}|;}' k8s/Deployment.yaml
 
                             git config user.name "Mubashir594"
                             git config user.email "mubumubashir594@gmail.com"
