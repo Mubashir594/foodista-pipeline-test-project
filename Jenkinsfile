@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -14,6 +15,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout Source Code') {
             steps {
                 echo "Source code checked out by Jenkins SCM"
@@ -68,6 +70,7 @@ pipeline {
         stage('Update Manifest Repo') {
             steps {
                 dir('manifest-workspace') {
+
                     git branch: "${MANIFEST_BRANCH}",
                         credentialsId: "${GIT_CREDENTIALS_ID}",
                         url: "${MANIFEST_REPO}"
@@ -80,7 +83,7 @@ pipeline {
                         )
                     ]) {
                         sh """
-                            sed -i '/name: foodista$/{n;s|image:.*|image: ${DOCKER_IMAGE}:${env.BUILD_NUMBER}|}' k8s/Deployment.yaml
+                            sed -i '/name: foodista\\$/{n;s|image:.*|image: ${DOCKER_IMAGE}:${env.BUILD_NUMBER}|}' k8s/Deployment.yaml
 
                             git config user.name "Mubashir594"
                             git config user.email "mubumubashir594@gmail.com"
@@ -88,11 +91,13 @@ pipeline {
                             git add k8s/Deployment.yaml
 
                             if ! git diff --cached --quiet; then
+
                                 git commit -m "chore(manifest): update foodista image tag to ${env.BUILD_NUMBER} [skip ci]"
 
                                 git remote set-url origin https://\${GH_USER}:\${GH_TOKEN}@github.com/Mubashir594/foodista-pipeline-test-project.git
 
                                 git push origin ${MANIFEST_BRANCH}
+
                             else
                                 echo "Manifest image is already up to date."
                             fi
